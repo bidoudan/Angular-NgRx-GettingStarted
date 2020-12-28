@@ -1,8 +1,11 @@
+import { sha1 } from '@angular/compiler/src/i18n/digest';
 import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 
 import { AuthService } from './auth.service';
+import { getMaskUserName, UserState } from './state/user.reducer';
 
 @Component({
   templateUrl: './login.component.html',
@@ -13,10 +16,13 @@ export class LoginComponent implements OnInit {
 
   maskUserName: boolean;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private store: Store<UserState>,private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
-
+    this.store.select(getMaskUserName).subscribe(
+      
+      maskUserName => {console.log(maskUserName);this.maskUserName = maskUserName}
+    );
   }
 
   cancel(): void {
@@ -24,7 +30,10 @@ export class LoginComponent implements OnInit {
   }
 
   checkChanged(): void {
-    this.maskUserName = !this.maskUserName;
+    // this.maskUserName = !this.maskUserName;
+    this.store.dispatch(
+      { type: '[User] Toggle User Name'}
+    );
   }
 
   login(loginForm: NgForm): void {
