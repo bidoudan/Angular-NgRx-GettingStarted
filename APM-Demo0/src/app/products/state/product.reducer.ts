@@ -4,6 +4,7 @@ import * as AppState from '../../state/app.state';
 import * as ProductActions from './product.actions';
 import { Action } from "rxjs/internal/scheduler/Action";
 import { sample } from "rxjs/operators";
+import { act } from "@ngrx/effects";
 export interface State extends AppState.State {
     products: ProductState;
 }
@@ -124,6 +125,22 @@ export const productReducer = createReducer<ProductState>(
             ...state,
             error: action.error
         };
+    }),
+
+    on(ProductActions.createProductSuccess, (state, action): ProductState => {
+        return {
+            ...state,
+            products: [...state.products, action.product],
+            currentProductId: action.product.id,
+            error: ''
+        }
+    }),
+
+    on(ProductActions.createProductFailure, (state, action): ProductState => {
+        return {
+            ...state,
+            error: action.error
+        }
     })
 
 
