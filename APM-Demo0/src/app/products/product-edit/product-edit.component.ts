@@ -9,7 +9,7 @@ import { NumberValidators } from '../../shared/number.validator';
 /* NgRx */
 import { Store } from '@ngrx/store';
 import { State, getCurrentProduct } from '../state';
-import * as ProductActions from '../state/product.actions';
+import { ProductPageActions } from '../state/actions';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 @Component({
@@ -117,12 +117,12 @@ export class ProductEditComponent implements OnInit {
         //   next: () => this.store.dispatch(ProductActions.clearCurrentProduct()),
         //   error: err => this.errorMessage = err
         // });
-        this.store.dispatch(ProductActions.deleteProduct({ productId: product.id}))
+        this.store.dispatch(ProductPageActions.deleteProduct({ productId: product.id }))
       }
     } else {
       // No need to delete, it was never saved
       //this.productService.changeSelectedProduct(null);
-      this.store.dispatch(ProductActions.clearCurrentProduct())
+      this.store.dispatch(ProductPageActions.clearCurrentProduct())
     }
   }
 
@@ -139,13 +139,13 @@ export class ProductEditComponent implements OnInit {
           //   next: p => this.store.dispatch(ProductActions.setCurrentProduct({ currentProductId: p.id })),
           //   error: err => this.errorMessage = err
           // });
-          this.store.dispatch(ProductActions.createProduct({ product }))
+          this.store.dispatch(ProductPageActions.createProduct({ product }))
         } else {
           // this.productService.updateProduct(product).subscribe({
           //   next: p => this.store.dispatch(ProductActions.setCurrentProduct({ currentProductId: p.id })),
           //   error: err => this.errorMessage = err
           // });
-          this.store.dispatch(ProductActions.updateProduct({ product }))
+          this.store.dispatch(ProductPageActions.updateProduct({ product }))
         }
       }
     }
