@@ -1,12 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
-import { getCurrentProduct, getShowProductCode, State } from '../state/product.reducer';
-import * as ProductActions from '../state/product.action';
+import { getCurrentProduct, getError, getProducts, getShowProductCode, State } from '../state/product.reducer';
+import * as ProductActions from '../state/product.actions';
 @Component({
   selector: 'pm-product-list',
   templateUrl: './product-list.component.html',
@@ -14,16 +14,13 @@ import * as ProductActions from '../state/product.action';
 })
 export class ProductListComponent implements OnInit {
   pageTitle = 'Products';
-  errorMessage: string;
 
-  displayCode: boolean;
+  products$: Observable<Product[]>;
+  selectedProduct$: Observable<Product>;
+  displayCode$: Observable<boolean>;
+  errorMessage$: Observable<string>;
 
-  products: Product[];
-
-  // Used to highlight the selected product in the list
-  selectedProduct: Product | null;
-
-  constructor(private store: Store<State>, private productService: ProductService) { 
+  constructor(private store: Store<State>) { 
 
   }
 
@@ -32,19 +29,20 @@ export class ProductListComponent implements OnInit {
     //   currentProduct => this.selectedProduct = currentProduct
     // );
     // TODO: Unsubscribe
-    this.store.select(getCurrentProduct).subscribe(
-      currentProduct => this.selectedProduct = currentProduct
-    );
 
-    this.productService.getProducts().subscribe({
-      next: (products: Product[]) => this.products = products,
-      error: err => this.errorMessage = err
-    });
+    this.selectedProduct$ = this.store.select(getCurrentProduct);
+
+    // this.productService.getProducts().subscribe({
+    //   next: (products: Product[]) => this.products = products,
+    //   error: err => this.errorMessage = err
+    // });
+    this.products$ = this.store.select(getProducts)
+    this.store.dispatch(ProductActions.loadProducts())
 
     // TODO: Unsubscribe
-    this.store.select(getShowProductCode).subscribe(
-      showProductCode =>  this.displayCode = showProductCode
-    );
+    this.displayCode$ = this.store.select(getShowProductCode);
+
+    this.errorMessage$ = this.store.select(getError);
   }
 
 
