@@ -5,10 +5,11 @@ import { Router } from '@angular/router';
 import { Store } from '@ngrx/store';
 
 import { AuthService } from './auth.service';
-import { getMaskUserName, UserState } from './state/user.reducer';
+import { getMaskUserName } from './state';
 
-import * as UserActions from './state/user.action';
+import { UserPageActions } from './state/actions';
 import { Observable } from 'rxjs';
+import { UserState } from './state/user.reducer';
 @Component({
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
@@ -30,7 +31,7 @@ export class LoginComponent implements OnInit {
 
   checkChanged(): void {
     // this.maskUserName = !this.maskUserName;
-    this.store.dispatch(UserActions.maskUserName());
+    this.store.dispatch(UserPageActions.maskUserName());
   }
 
   login(loginForm: NgForm): void {
